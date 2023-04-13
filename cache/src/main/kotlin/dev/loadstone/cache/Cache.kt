@@ -1,5 +1,6 @@
 package dev.loadstone.cache
 
+import dev.loadstone.cache.settings.ArchiveSettings
 import dev.loadstone.cache.store.Container
 import dev.loadstone.cache.store.FileStore
 import java.io.File
@@ -8,8 +9,12 @@ class Cache private constructor(
     val store: FileStore
 ) : AutoCloseable {
 
-    override fun close() {
+    val archiveCount get() = store.archiveCount
 
+
+
+    override fun close() {
+        store.close()
     }
 
     companion object {
@@ -24,9 +29,10 @@ class Cache private constructor(
 fun main() {
     println("Opening cache.")
     val cache = Cache.open(File("data/cache/"))
-    val bytes = cache.store.read(2, 3)
+    val bytes = cache.store.read(255, 1)
     println("bytes: ${bytes.readableBytes()}")
 
     val container = Container.decode(bytes)
+    val archiveSettings = ArchiveSettings.decode(container)
     println("Container")
 }

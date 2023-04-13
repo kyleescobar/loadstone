@@ -25,6 +25,8 @@ class FileStore private constructor(private val directory: File) : AutoCloseable
         idxFiles[255] = IdxFile(255, directory.resolve(IDX_FILE_NAME + "255"))
     }
 
+    val archiveCount get() = idxFiles.size - 1
+
     fun read(idxFileId: Int, containerId: Int): ByteBuf {
         val idxFile = idxFiles.getOrPut(idxFileId) { IdxFile(idxFileId, directory.resolve(IDX_FILE_NAME + "$idxFileId")) }
         val index = idxFile.read(containerId)
